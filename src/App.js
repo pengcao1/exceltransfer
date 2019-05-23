@@ -98,6 +98,13 @@ class App extends Component {
       <div className="container">
         <div className="row">
           <div className="offset-md-3 col-md-6">
+
+            <div>
+              <label for="uname"><b>User Name</b></label>
+              <input type="text" placeholder="Enter Username" name="uname" required/>
+              <label for="psw"><b>Password</b></label>
+              <input type="password" placeholder="Enter Password" name="psw" required/>
+            </div>
             <div className="form-group files">
               <label>Upload Your File </label>
               <input type="file" className="form-control" multiple onChange={this.onChangeHandler} />

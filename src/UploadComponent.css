@@ -1,0 +1,12 @@
+form {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+button {
+    margin-top: 4em;
+}
+
+input {
+    margin: 2em 1em;
+}

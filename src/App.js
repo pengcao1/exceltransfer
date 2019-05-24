@@ -100,9 +100,9 @@ class App extends Component {
           <div className="offset-md-3 col-md-6">
 
             <div>
-              <label for="uname"><b>User Name</b></label>
+              <label htmlFor="uname"><b>User Name</b></label>
               <input type="text" placeholder="Enter Username" name="uname" required/>
-              <label for="psw"><b>Password</b></label>
+              <label htmlFor="psw"><b>Password</b></label>
               <input type="password" placeholder="Enter Password" name="psw" required/>
             </div>
             <div className="form-group files">

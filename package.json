@@ -13,7 +13,9 @@
     "react-scripts": "^3.0.1",
     "react-strap": "^0.0.1",
     "react-toastify": "^5.1.1",
-    "reactstrap": "^8.0.0"
+    "reactstrap": "^8.0.0",
+    "convert-excel-to-json": "^1.6.1",
+    "fs": "0.0.1-security"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -100,10 +100,10 @@ class App extends Component {
           <div className="offset-md-3 col-md-6">
 
             <div>
-              <label htmlFor="uname"><b>User Name</b></label>
-              <input type="text" placeholder="Enter Username" name="uname" required/>
-              <label htmlFor="psw"><b>Password</b></label>
-              <input type="password" placeholder="Enter Password" name="psw" required/>
+              <label htmlFor="uname"><b>请输入部门:</b></label>
+              <input type="text" placeholder="部门" name="uname" required/>
+              <label htmlFor="psw"><b>请输入姓名</b></label>
+              <input type="password" placeholder="姓名" name="psw" required/>
             </div>
             <div className="form-group files">
               <label>Upload Your File </label>

@@ -6,12 +6,13 @@ app.use(cors())
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        //TODO: create public folder is not exits
         cb(null, 'public')
     },
     filename: function (req, file, cb) {
-        const fileName = Date.now() + '-' + file.originalname;
+        const fileName = Date.now() + '_' + file.originalname;
         cb(null, fileName)
-        convertExcel(fileName);
+        //convertExcel('public/'+fileName);
     }
 })
 
@@ -21,6 +22,7 @@ app.get('/', function (req, res) {
     return res.send('Hello Server')
 })
 app.post('/upload', function (req, res) {
+    // console.log(res, "9911");
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
             console.log(err)
@@ -31,9 +33,6 @@ app.post('/upload', function (req, res) {
             return res.status(500).json(err)
             // An unknown error occurred when uploading.
         }
-
-
-        console.log(req.file, "99");
         return res.status(200).send(req.file)
         // Everything went fine.
     })
@@ -42,46 +41,46 @@ app.post('/upload', function (req, res) {
 
 const convertExcel = (fileName) => {
     console.log("11 in convertExcel fileName=%s", fileName);
-    const excelToJson = require('convert-excel-to-json');
-    const fs = require('fs');
-    const result = excelToJson({
-        sourceFile: 'public/'+fileName,
-        sheets: [{
-            name: 'Purchase map',
-            header: {
-                rows: 1
-            },
-            columnToKey: {
-                A: 'Base Course Type',
-                B: 'ISBN',
-                C: 'Course name',
-                D: 'Upsell in-app purchase ISBN',
-                E: 'Upsell course name',
-                F: 'Upsell2 in-app purchase ISBN',
-                G: 'Upsell2 course name',
-                H: 'Upgrade in-app purchase ISBN',
-                I: 'Upgrade course name'
+    const XLSX = require("xlsx");
+    const workbook = XLSX.readFile(fileName);
+    const sheet_name_list = workbook.SheetNames;
+    sheet_name_list.forEach((value,index,array) => {
+        // const worksheet = workbook.Sheets[value]
+        console.log("value=", value);
+        console.log("index=", index);
+        console.log("array=", array);
+            var worksheet = workbook.Sheets[value];
+            var headers = {};
+            var data = [];
+            for (var z in worksheet) {
+              if (z[0] === "!") continue;
+              //parse out the column, row, and value
+              var col = z.substring(0, 1);
+              var row = parseInt(z.substring(1));
+              var value = worksheet[z].v;
+
+              //store header names
+              if (row == 1) {
+                headers[col] = value;
+                continue;
+              }
+
+              if (!data[row]) data[row] = {};
+              data[row][headers[col]] = value;
             }
-        }, {
-            name: 'Format map',
-            header: {
-                rows: 1
-            },
-            columnToKey: {
-                A: 'Base Course Type',
-                B: 'ISBN',
-                C: 'Course name - Upsell Card & Library',
-                D: 'Course name - Learn Page',
-                E: 'Course Description - Upsell Card',
-                F: 'Other format 1 (Upsell) ISBN',
-                G: 'Other format 2 (Upgrade) ISBN',
-                H: 'Other format 3 (DVD) ISBN'
-            }
-        }]
+            //drop those first two rows which are empty
+            data.shift();
+            data.shift();
+            console.log(data);
     });
-
-
+    // sheet_name_list.forEach(())
+    // const sheetNames = sheetContent.SheetNames;
+    // const workSheet = sheetContent.Sheets[sheetNames[0]];
+    // console.log("workSheet=, ", workSheet);
+    // console.log("sheetNames=", sheetNames[0]);
+   // console.log("sheetContent, ",sheetContent);
 }
 app.listen(8100, function () {
+    convertExcel("public/1559737321420_httest.xlsx");
     console.log('App running on port 8100');
 });

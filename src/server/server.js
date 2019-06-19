@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var multer = require('multer')
 var cors = require('cors');
+const CONFIG = require('./const');
+
 app.use(cors())
 
 var storage = multer.diskStorage({
@@ -13,10 +15,24 @@ var storage = multer.diskStorage({
         const fileName = Date.now() + '_' + file.originalname;
         cb(null, fileName)
         //convertExcel('public/'+fileName);
+        return
     }
 })
 
-var upload = multer({ storage: storage }).array('file')
+var upload = multer({
+  storage: storage,
+  fileFilter: function(req, file, callback) {
+    //file filter
+    if (
+      ["xls", "xlsx"].indexOf(
+        file.originalname.split(".")[file.originalname.split(".").length - 1]
+      ) === -1
+    ) {
+      return callback(new Error("Wrong extension type"));
+    }
+    callback(null, true);
+  }
+}).single("file");
 
 app.get('/', function (req, res) {
     return res.send('Hello Server')
@@ -32,10 +48,16 @@ app.post('/upload', function (req, res) {
             console.log(err ,"--")
             return res.status(500).json(err)
             // An unknown error occurred when uploading.
+        } else if (!req.file) {
+            return res.status(501).json(err);
         }
+
+        console.log(req.file.path);
+        convertExcel(req.file.path);
         return res.status(200).send(req.file)
         // Everything went fine.
     })
+    //console.log(res, "9911");
 });
 
 
@@ -45,42 +67,25 @@ const convertExcel = (fileName) => {
     const workbook = XLSX.readFile(fileName);
     const sheet_name_list = workbook.SheetNames;
     sheet_name_list.forEach((value,index,array) => {
-        // const worksheet = workbook.Sheets[value]
-        console.log("value=", value);
-        console.log("index=", index);
-        console.log("array=", array);
-            var worksheet = workbook.Sheets[value];
-            var headers = {};
-            var data = [];
-            for (var z in worksheet) {
-              if (z[0] === "!") continue;
-              //parse out the column, row, and value
-              var col = z.substring(0, 1);
-              var row = parseInt(z.substring(1));
-              var value = worksheet[z].v;
-
-              //store header names
-              if (row == 1) {
-                headers[col] = value;
-                continue;
-              }
-
-              if (!data[row]) data[row] = {};
-              data[row][headers[col]] = value;
-            }
-            //drop those first two rows which are empty
-            data.shift();
-            data.shift();
-            console.log(data);
+        var worksheet = workbook.Sheets[value];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        //console.log(jsonData);
+        jsonData.map((value,index,array) => {
+            console.log("++++++++++++++++++++");
+            Object.keys(value).map((value, index, array) => {
+                // console.log(CONFIG.EXCEL_HEADER_FORMAT[index+1], "vs", value);
+                if (CONFIG.EXCEL_HEADER_FORMAT[index+1] !== value) {
+                    console.error("EXCEL FORMAT error");
+                    console.log(CONFIG.EXCEL_HEADER_FORMAT[index+1], "vs", value);
+                }
+            });
+            console.log(value);
+            console.log(index);
+            console.log(array);
+            console.log("===============");
+        });
     });
-    // sheet_name_list.forEach(())
-    // const sheetNames = sheetContent.SheetNames;
-    // const workSheet = sheetContent.Sheets[sheetNames[0]];
-    // console.log("workSheet=, ", workSheet);
-    // console.log("sheetNames=", sheetNames[0]);
-   // console.log("sheetContent, ",sheetContent);
 }
 app.listen(8100, function () {
-    convertExcel("public/1559737321420_httest.xlsx");
     console.log('App running on port 8100');
 });

@@ -10,6 +10,9 @@ npx create-react-app exceltransfer
 
 ```
 
+## How to run
+- `npm start`
+
 # Before readme 
 
 ## Available Scripts

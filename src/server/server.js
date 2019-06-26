@@ -53,8 +53,9 @@ app.post('/upload', function (req, res) {
         }
 
         console.log(req.file.path);
-        convertExcel(req.file.path);
-        return res.status(200).send(req.file)
+        const re = convertExcel(req.file.path);
+        console.log("===== ",re);
+        return res.status(200).json(re).send();
         // Everything went fine.
     })
     //console.log(res, "9911");
@@ -66,25 +67,28 @@ const convertExcel = (fileName) => {
     const XLSX = require("xlsx");
     const workbook = XLSX.readFile(fileName);
     const sheet_name_list = workbook.SheetNames;
+    let allSheetJson = [];
     sheet_name_list.forEach((value,index,array) => {
         var worksheet = workbook.Sheets[value];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         //console.log(jsonData);
         jsonData.map((value,index,array) => {
-            console.log("++++++++++++++++++++");
+            // console.log("++++++++++++++++++++");
             Object.keys(value).map((value, index, array) => {
                 // console.log(CONFIG.EXCEL_HEADER_FORMAT[index+1], "vs", value);
                 if (CONFIG.EXCEL_HEADER_FORMAT[index+1] !== value) {
-                    console.error("EXCEL FORMAT error");
-                    console.log(CONFIG.EXCEL_HEADER_FORMAT[index+1], "vs", value);
+                    // console.error("EXCEL FORMAT error");
+                    // console.log(CONFIG.EXCEL_HEADER_FORMAT[index+1], "vs", value);
                 }
             });
-            console.log(value);
-            console.log(index);
-            console.log(array);
-            console.log("===============");
+            // console.log(value);
+            // console.log(index);
+            // console.log(array);
+            console.log(jsonData);
         });
+        allSheetJson.push(jsonData);
     });
+    return allSheetJson;
 }
 app.listen(8100, function () {
     console.log('App running on port 8100');

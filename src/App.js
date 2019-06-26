@@ -18,9 +18,9 @@ class App extends Component {
     //define message container
     let err = []
     // list allow mime type
-    const types = ['application/vnd.ms-excel', 
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+    const types = ['application/vnd.ms-excel',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
     // loop access array
     for (var x = 0; x < files.length; x++) {
       // compare file type find doesn't matach
@@ -86,7 +86,10 @@ class App extends Component {
       },
     })
       .then(res => { // then print response status
-        toast.success('upload success')
+        // toast.success(res)
+        // alert(res.status);
+        // alert(res.data);
+        console.log(res);
       })
       .catch(err => { // then print response status
         toast.error('upload fail')
@@ -101,9 +104,9 @@ class App extends Component {
 
             <div>
               <label htmlFor="uname"><b>请输入部门:</b></label>
-              <input type="text" placeholder="部门" name="uname" required/>
+              <input type="text" placeholder="部门" name="uname" required />
               <label htmlFor="psw"><b>请输入姓名</b></label>
-              <input type="password" placeholder="姓名" name="psw" required/>
+              <input type="password" placeholder="姓名" name="psw" required />
             </div>
             <div className="form-group files">
               <label>Upload Your File </label>
@@ -119,6 +122,24 @@ class App extends Component {
 
           </div>
         </div>
+        {/* <div class="md-form mb-4 pink-textarea active-pink-textarea">
+          <textarea id="form18" class="md-textarea form-control" rows="3"></textarea>
+          <label for="form18">Material textarea colorful on :focus state</label>
+        </div>
+
+        <div class="md-form amber-textarea active-amber-textarea">
+          <textarea id="form19" class="md-textarea form-control" rows="3"></textarea>
+          <label for="form19">Material textarea colorful on :focus state</label>
+        </div>
+        <div class="md-form mb-4 pink-textarea active-pink-textarea-2">
+          <textarea id="form17" class="md-textarea form-control" rows="3"></textarea>
+          <label for="form17">Material textarea always colorful</label>
+        </div>
+
+        <div class="md-form amber-textarea active-amber-textarea-2">
+          <textarea id="form16" class="md-textarea form-control" rows="3"></textarea>
+          <label for="form16">Material textarea always colorful</label>
+        </div> */}
       </div>
     );
   }
